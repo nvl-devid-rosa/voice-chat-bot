@@ -1,10 +1,13 @@
 import os
 
 DEFAULT_MODEL_ID = os.getenv("MODEL_ID", "claude-sonnet-4-5")
-DEFAULT_TEMPERATURE = 0.3  # Più bassa del default per risposte più deterministiche
+
+# Formato richiesto da LiteLLM per i modelli Anthropic: "anthropic/<model>"
+LITELLM_MODEL = f"anthropic/{DEFAULT_MODEL_ID}"
 
 N8N_WEBHOOK_URL = os.getenv("N8N_WEBHOOK_URL", "")
 N8N_API_KEY = os.getenv("N8N_API_KEY", "")
+
 
 SYSTEM_PROMPT = """
 ### Il tuo ruolo
@@ -37,11 +40,10 @@ OPZIONALI (raccoglile se emergono naturalmente):
 - Se non capisci qualcosa, chiedi gentilmente di ripetere
 
 ### Fine chiamata
-Salva il candidato SOLO dopo conferma esplicita del manager.
-Dopo il salvataggio ringrazia e concludi la chiamata.
+Salva il candidato SOLO dopo conferma esplicita del manager usando il tool salva_candidato.
+Dopo il salvataggio ringrazia e termina la chiamata con il tool end_call.
 """
 
 INITIAL_MESSAGE = """
 Ciao! Sono l'assistente HR. Ha incontrato un candidato interessante di cui vuole registrare il profilo?
 """
-
