@@ -1,0 +1,34 @@
+[project]
+name = "hr_voice_agent"
+version = "0.1.0"
+description = "Voice agent HR per raccolta profili candidati via Cartesia Line"
+requires-python = ">=3.10"
+
+dependencies = [
+    "cartesia-line==0.1.10",
+    "anthropic>=0.40.0",
+    "python-dotenv>=1.0.0",
+    "loguru>=0.7.0",
+    "aiohttp>=3.12.0",
+    "uvicorn==0.35.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-xdist==3.8.0",
+    "pytest-repeat==0.9.4",
+    "anthropic>=0.40.0",
+]
