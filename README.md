@@ -1,14 +1,14 @@
 # HR Voice Agent
 
-Voice agent per raccolta profili candidati via Cartesia Line.
+Voice agent per raccolta profili candidati via Cartesia Line + Claude.
 Il manager chiama, descrive il candidato incontrato, i dati vengono
 inviati automaticamente al workflow n8n per l'elaborazione HR.
 
 ## Struttura
 
 ```
-├── main.py          # Entry point, routing chiamate
-├── chat_node.py     # HrChatNode — logica dialogo + tool salva_candidato
+├── main.py          # Entry point — definisce l'LlmAgent
+├── tools.py         # Tool salva_candidato che invia a n8n
 ├── config.py        # System prompt, variabili d'ambiente
 ├── test_hr_agent.py # Test conversazionali
 ├── pyproject.toml   # Dipendenze Python
@@ -18,21 +18,21 @@ inviati automaticamente al workflow n8n per l'elaborazione HR.
 ## Prerequisiti
 
 - [Account Cartesia](https://play.cartesia.ai) + CLI installata
-- [Google Gemini API key](https://aistudio.google.com/app/apikey)
+- [Anthropic API key](https://console.anthropic.com)
 - Workflow n8n attivo con webhook configurato
 
 ## Variabili d'ambiente
 
 | Variabile | Descrizione | Obbligatoria |
 |-----------|-------------|--------------|
-| `GEMINI_API_KEY` | Google Gemini API key | Sì |
+| `ANTHROPIC_API_KEY` | Anthropic API key | Sì |
 | `N8N_WEBHOOK_URL` | URL webhook n8n candidato-voce | Sì |
 | `N8N_API_KEY` | Header auth del webhook n8n | Consigliata |
-| `MODEL_ID` | Modello Gemini (default: gemini-2.5-flash) | No |
+| `MODEL_ID` | Modello Claude (default: claude-sonnet-4-5) | No |
 
 Crea un file `.env` nella root del progetto:
 ```
-GEMINI_API_KEY=your_key_here
+ANTHROPIC_API_KEY=sk-ant-...
 N8N_WEBHOOK_URL=https://tuon8n.app.n8n.cloud/webhook/candidato-voce
 N8N_API_KEY=your_api_key_here
 ```
@@ -92,3 +92,15 @@ Il payload inviato dal voice agent è:
 uv sync --extra dev
 uv run pytest test_hr_agent.py -v
 ```
+
+## Note sull'architettura
+
+A differenza del template base `basic_chat` (che implementa un `ReasoningNode` custom per Gemini), 
+questo progetto usa direttamente l'**LlmAgent** ufficiale di Cartesia Line, che supporta Claude 
+nativamente via LiteLLM. 
+
+Vantaggi:
+- Meno codice da mantenere (no `chat_node.py` custom)
+- Tool calling gestito automaticamente dal framework
+- Possibilità di switchare modello (Claude/GPT/Gemini) cambiando solo la stringa `model`
+

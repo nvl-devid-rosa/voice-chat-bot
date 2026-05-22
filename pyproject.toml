@@ -1,7 +1,7 @@
 [project]
 name = "hr_voice_agent"
 version = "0.1.0"
-description = "Voice agent HR per raccolta profili candidati via Cartesia Line"
+description = "Voice agent HR per raccolta profili candidati via Cartesia Line + Claude"
 requires-python = ">=3.10"
 
 dependencies = [
@@ -30,5 +30,4 @@ dev = [
     "pytest-cov",
     "pytest-xdist==3.8.0",
     "pytest-repeat==0.9.4",
-    "anthropic>=0.40.0",
 ]
